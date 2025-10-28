@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đang đăng nhập…</title>
+    <style>
+        body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:#0b1220;color:#e6eefc;display:grid;place-items:center;height:100vh}
+        .card{background:#121a2b;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px;max-width:520px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+        .muted{color:#a3b1c6;font-size:14px}
+        .err{color:#ffb4b4}
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Đang xử lý đăng nhập…</h2>
+    <p class="muted" id="msg">Vui lòng đợi trong giây lát.</p>
+    <pre id="debug" class="muted" style="white-space:pre-wrap"></pre>
+</div>
+
+<script>
+    // ========= Config =========
+    const HOME_PAGE = 'dashboard.html';
+    const BACKEND_BASE = (localStorage.getItem('backendBase') || 'http://localhost:9089').replace(/\/+$/,'');
+
+    // ========= Utils =========
+    function parseParams() {
+        const out = {};
+        const add = s => {
+            if (!s) return;
+            const clean = s.replace(/^[?#]/,'');
+            if (!clean) return;
+            for (const part of clean.split('&')) {
+                if (!part) continue;
+                const i = part.indexOf('=');
+                const k = i >= 0 ? part.slice(0,i) : part;
+                const v = i >= 0 ? part.slice(i+1) : '';
+                out[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g,'%20'));
+            }
+        };
+        add(location.search);
+        add(location.hash);
+        return out;
+    }
+
+    function done(token, extras={}) {
+        try {
+            localStorage.setItem('token', token);
+            if (extras.classCode) localStorage.setItem('classCode', extras.classCode);
+        } catch (e) {
+            console.warn('Cannot write localStorage:', e);
+        }
+
+        // Nếu mở trong popup → gửi token về cửa sổ mẹ và tự đóng
+        if (window.opener && !window.opener.closed) {
+            try { window.opener.postMessage({ type:'auth-success', token }, '*'); } catch {}
+            window.close();
+            return;
+        }
+        // Về dashboard (relative để không dính port sai)
+        location.replace(HOME_PAGE);
+    }
+
+    (async () => {
+        const p = parseParams();
+        const msg = document.getElementById('msg');
+        const debug = document.getElementById('debug');
+
+        // 1) Token có sẵn trong URL (hash hoặc query)
+        const directToken = p.token || p.id_token || p.access_token;
+        if (directToken) {
+            msg.textContent = 'Đăng nhập thành công, đang chuyển vào hệ thống…';
+            return done(directToken, { classCode: p.classCode });
+        }
+
+        // 2) Có code/state → gọi backend để exchange (nếu bạn hỗ trợ endpoint này)
+        if (p.code) {
+            try {
+                const url = `${BACKEND_BASE}/api/auth/exchange?code=${encodeURIComponent(p.code)}${p.state ? `&state=${encodeURIComponent(p.state)}`:''}`;
+                const res = await fetch(url, { credentials: 'include' });
+                if (!res.ok) throw new Error(await res.text().catch(()=>res.statusText));
+                const data = await res.json().catch(()=> ({}));
+                const token = data.token || data.access_token || data.id_token;
+                if (!token) throw new Error('Backend không trả token');
+                msg.textContent = 'Đăng nhập thành công, đang chuyển vào hệ thống…';
+                return done(token, { classCode: data.classCode });
+            } catch (e) {
+                msg.innerHTML = '<span class="err">Lỗi khi đổi code lấy token.</span>';
+                debug.textContent = String(e?.message || e);
+                return;
+            }
+        }
+
+        // 3) Không có token cũng không có code
+        msg.innerHTML = '<span class="err">Thiếu thông tin đăng nhập trong URL (token/code).</span>';
+        debug.textContent = 'Kiểm tra lại redirect từ Backend/Casdoor: nên chuyển về /auth-callback.html#token=... hoặc /auth-callback.html?code=...';
+    })();
+</script>
+</body>
+</html>

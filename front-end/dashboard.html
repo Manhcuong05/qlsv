@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QLSV • Trang chủ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        *{box-sizing:border-box}
+        :root{
+            --bg:#0b1220; --card:#121a2b; --muted:#a3b1c6; --text:#e6eefc;
+            --brand:#4f8cff; --brand-2:#7c5cff; --ring:0 0 0 2px rgba(79,140,255,.25); --radius:16px;
+        }
+        html,body{height:100%;}
+        body{
+            margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial,'Noto Sans';
+            color:var(--text);
+            background: radial-gradient(1200px 600px at 100% -100%,rgba(56,92,200,.25),transparent 40%),
+            radial-gradient(900px 500px at -20% 0%,rgba(124,92,255,.20),transparent 35%),
+            var(--bg);
+        }
+        .appbar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;
+            padding:10px 12px;background:linear-gradient(180deg,rgba(11,18,32,.9),rgba(11,18,32,.6));backdrop-filter:blur(6px);
+            border-bottom:1px solid rgba(255,255,255,.06)}
+        .appbar h1{margin:0;text-align:center;font-size:18px;font-weight:700;letter-spacing:.2px}
+        .icon-btn{background:transparent;border:0;color:var(--muted);padding:8px;border-radius:12px;cursor:pointer}
+        .icon-btn:hover{background:rgba(255,255,255,.06)}
+        .container{max-width:980px;margin:0 auto;padding:20px 16px 88px}
+        .welcome .title{font-size:24px;font-weight:700;margin:6px 0 12px}
+        .meta{display:flex;gap:10px;align-items:center}
+        .badge{font-size:12px;color:var(--muted);border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.03)}
+        .code{font-weight:700;letter-spacing:.6px}
+        .stats{margin-top:14px}
+        .stat-card{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(79,140,255,.14),rgba(124,92,255,.12));
+            border:1px solid rgba(255,255,255,.10);border-radius:var(--radius);padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.02)}
+        .stat-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(79,140,255,.15)}
+        .stat-info .stat-label{color:var(--muted);font-size:13px}
+        .stat-info .stat-value{font-size:20px;font-weight:700;margin-top:2px}
+        .grid{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+        @media (min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+        .tile{text-decoration:none;color:inherit;background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.04));
+            border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:center;
+            transition:transform .15s ease,box-shadow .15s ease,background .2s ease,border-color .2s ease;cursor:pointer}
+        .tile:hover{transform:translateY(-2px);border-color:rgba(79,140,255,.35);box-shadow:0 8px 24px rgba(79,140,255,.15)}
+        .tile-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.06)}
+        .tile-title{font-weight:700}.tile-sub{font-size:12px;color:var(--muted);margin-top:2px}
+        .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);
+            background:rgba(11,18,32,.9);backdrop-filter:blur(6px);border-top:1px solid rgba(255,255,255,.08)}
+        .nav-btn{appearance:none;background:transparent;border:0;color:var(--muted);padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;cursor:pointer}
+        .nav-btn.active{color:var(--text)} .nav-btn:focus-visible{outline:none;box-shadow:var(--ring)}
+        .toast{position:fixed;left:50%;bottom:72px;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+        .toast.show{opacity:1}
+    </style>
+</head>
+<base href="./">
+
+<body>
+<header class="appbar">
+    <div class="left"><span class="material-icons-outlined">menu</span></div>
+    <h1>Trang chủ</h1>
+    <div class="right">
+        <button id="signOutBtn" class="icon-btn" title="Đăng xuất"><span class="material-icons-outlined">logout</span></button>
+    </div>
+</header>
+
+<main class="container">
+    <section class="welcome">
+        <h2 class="title">Menu</h2>
+        <div class="meta">
+            <div class="badge">Mã lớp học</div>
+            <div id="classCode" class="code">—</div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-icon"><span class="material-icons-outlined">groups</span></div>
+            <div class="stat-info">
+                <div class="stat-label">Số lượng</div>
+                <div id="studentCount" class="stat-value">Đang tải...</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid">
+        <a class="tile" data-route="ai"><div class="tile-icon"><span class="material-icons-outlined">smart_toy</span></div><div class="tile-text"><div class="tile-title">Trợ lý học tập AI</div><div class="tile-sub">Chat &amp; giải bài</div></div></a>
+        <a class="tile" data-route="students"><div class="tile-icon"><span class="material-icons-outlined">badge</span></div><div class="tile-text"><div class="tile-title">Thông Tin Cơ Bản</div><div class="tile-sub">Sinh viên</div></div></a>
+        <a class="tile" data-route="subjects"><div class="tile-icon"><span class="material-icons-outlined">menu_book</span></div><div class="tile-text"><div class="tile-title">Môn học</div><div class="tile-sub">Danh sách</div></div></a>
+        <a class="tile" data-route="lecturers"><div class="tile-icon"><span class="material-icons-outlined">school</span></div><div class="tile-text"><div class="tile-title">Giảng viên</div><div class="tile-sub">Thông tin</div></div></a>
+        <a class="tile" data-route="feedback"><div class="tile-icon"><span class="material-icons-outlined">forum</span></div><div class="tile-text"><div class="tile-title">Feedback</div><div class="tile-sub">Góp ý</div></div></a>
+        <a class="tile" data-route="report"><div class="tile-icon"><span class="material-icons-outlined">insights</span></div><div class="tile-text"><div class="tile-title">Báo cáo</div><div class="tile-sub">Điểm &amp; biểu đồ</div></div></a>
+    </section>
+</main>
+
+<nav class="bottom-nav">
+    <button class="nav-btn active" data-route="home"><span class="material-icons-outlined">home</span><span>Trang chủ</span></button>
+    <button class="nav-btn" data-route="students"><span class="material-icons-outlined">groups</span><span>Sinh viên</span></button>
+    <button class="nav-btn" data-route="exams"><span class="material-icons-outlined">event_note</span><span>Kỳ thi</span></button>
+    <button class="nav-btn" data-route="profile"><span class="material-icons-outlined">person</span><span>Hồ sơ</span></button>
+</nav>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    /** ========= Config ========= */
+    const LANDING_PAGE = 'index.html';                 // Trang landing/đăng nhập
+    const BACKEND_BASE = localStorage.getItem('backendBase') || 'http://localhost:9089'; // tuỳ bạn
+    const API_BASE = localStorage.getItem('apiBase') || (BACKEND_BASE.replace(/\/+$/,'') + '/api');
+
+    /** ========= Helpers ========= */
+    const toastEl = document.getElementById('toast');
+    function toast(msg, ms=1400){ toastEl.textContent = msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'), ms); }
+
+    function parseJwt(token){
+        try{
+            const payload = token.split('.')[1];
+            const json = atob(payload.replace(/-/g,'+').replace(/_/g,'/'));
+            return JSON.parse(decodeURIComponent(escape(json)));
+        }catch{ return null; }
+    }
+    function isExpired(token){
+        const p = parseJwt(token);
+        if(!p || !p.exp) return false; // không có exp thì không chặn
+        const now = Math.floor(Date.now()/1000);
+        return p.exp <= now;
+    }
+    function guard(){
+        const token = localStorage.getItem('token');
+        if(!token || isExpired(token)){
+            // Xoá token lỗi/hết hạn để tránh lặp
+            localStorage.removeItem('token');
+            location.replace(LANDING_PAGE);
+            return null;
+        }
+        return token;
+    }
+
+    /** ========= Auth Guard on load ========= */
+    const TOKEN = guard();
+    if(!TOKEN){ /* đã redirect */ }
+
+    /** ========= UI data ========= */
+    const classCodeEl = document.getElementById('classCode');
+    const studentCountEl = document.getElementById('studentCount');
+
+    // Ưu tiên classCode trong localStorage; nếu không có, lấy từ claim 'classCode'
+    (function setClassCode(){
+        const saved = localStorage.getItem('classCode');
+        if(saved){ classCodeEl.textContent = saved; return; }
+        const payload = parseJwt(localStorage.getItem('token') || '');
+        classCodeEl.textContent = payload?.classCode || payload?.cls || '23IT1';
+    })();
+
+    async function fetchStudentCount() {
+        try {
+            const res = await fetch(`${API_BASE.replace(/\/+$/,'')}/students/count`, {
+                headers: { ...(TOKEN ? { 'Authorization': `Bearer ${TOKEN}` } : {}) }
+            });
+            if (res.status === 401) {
+                // token sai/hết hạn → quay lại login
+                localStorage.removeItem('token');
+                location.replace(LANDING_PAGE);
+                return;
+            }
+            if (!res.ok) throw new Error(await res.text());
+            const data = await res.json();
+            const count = data.count ?? data?.data ?? 0;
+            studentCountEl.textContent = `${count} sinh viên`;
+        } catch (e) {
+            console.warn('Fetch error:', e);
+            studentCountEl.textContent = 'Lỗi';
+            studentCountEl.title = String(e);
+        }
+    }
+
+    /** ========= Mini Router (demo) ========= */
+    document.querySelectorAll('.tile, .nav-btn').forEach(el=>{
+        el.addEventListener('click', (e)=>{
+            const route = el.dataset.route || 'home';
+            e.preventDefault();
+            navigate(route);
+        });
+    });
+    function setActive(route){
+        document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.route===route));
+    }
+    function navigate(route){
+        setActive(route);
+        const map = {
+            'ai':'Mở trang Trợ lý học tập AI',
+            'students':'Đi tới danh sách sinh viên',
+            'subjects':'Đi tới danh sách môn học',
+            'lecturers':'Đi tới danh sách giảng viên',
+            'feedback':'Đi tới trang góp ý',
+            'report':'Mở báo cáo điểm',
+            'exams':'Mở lịch thi',
+            'profile':'Mở hồ sơ người dùng',
+            'home':'Trang chủ'
+        };
+        toast(map[route] || route);
+    }
+
+    /** ========= Logout ========= */
+    document.getElementById('signOutBtn').addEventListener('click', async ()=>{
+        try{
+            // Nếu backend có endpoint logout, bỏ comment dòng dưới:
+            // await fetch(`${BACKEND_BASE.replace(/\/+$/,'')}/api/logout`, { method:'POST', credentials:'include', headers:{ 'Authorization': `Bearer ${TOKEN}` } });
+        }catch(e){ console.warn('Logout call error:', e); }
+        localStorage.removeItem('token');
+        toast('Đã đăng xuất');
+        setTimeout(()=>location.replace(LANDING_PAGE), 300);
+    });
+
+    /** ========= Init ========= */
+    if (TOKEN) fetchStudentCount();
+</script>
+</body>
+</html>

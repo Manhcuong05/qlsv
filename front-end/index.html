@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>QLSV Shop • Thời trang</title>
+    <style>
+        :root{
+            --primary:#5563DE;
+            --primary-dark:#4350c9;
+            --bg:#f5f6fa;
+            --text:#1f2937;
+            --muted:#6b7280;
+            --card:#ffffff;
+            --accent:#74ABE2;
+            --radius:14px;
+        }
+        *{box-sizing:border-box}
+        html,body{margin:0; padding:0; font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--text); background:var(--bg);}
+        a{color:inherit; text-decoration:none}
+        img{max-width:100%; display:block}
+
+        /* Header */
+        .header{
+            position:sticky; top:0; z-index:50;
+            background:linear-gradient(90deg, #ffffffcc, #ffffffee);
+            backdrop-filter: blur(8px);
+            border-bottom:1px solid #e5e7eb;
+        }
+        .nav{
+            max-width:1200px; margin:0 auto; padding:12px 20px;
+            display:flex; align-items:center; gap:16px;
+        }
+        .brand{
+            display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.3px;
+        }
+        .brand .logo{
+            width:36px; height:36px; border-radius:8px;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display:grid; place-items:center; color:#fff; font-weight:800;
+            box-shadow: 0 4px 18px rgba(85,99,222,.35);
+        }
+        .nav-links{
+            margin-left:20px; display:flex; gap:14px; flex-wrap:wrap;
+        }
+        .nav-links a{
+            padding:8px 12px; border-radius:10px; color:var(--muted);
+        }
+        .nav-links a:hover, .nav-links a.active{color:#111827; background:#eef2ff;}
+        .spacer{flex:1}
+        .search{
+            position:relative; width:280px; max-width:40vw;
+        }
+        .search input{
+            width:100%; padding:10px 12px 10px 36px; border-radius:12px; border:1px solid #e5e7eb; background:#fff;
+            outline:none;
+        }
+        .search .icon{
+            position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:14px; color:#9ca3af;
+        }
+        .auth{
+            display:flex; gap:10px; align-items:center;
+        }
+        .btn{
+            border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:600;
+            transition: all .2s ease;
+        }
+        .btn-outline{ background:#fff; border:1px solid #e5e7eb; }
+        .btn-outline:hover{ background:#f9fafb;}
+        .btn-primary{ background:var(--primary); color:#fff; box-shadow: 0 6px 18px rgba(85,99,222,.35);}
+        .btn-primary:hover{ background:var(--primary-dark); transform: translateY(-1px);}
+
+        /* Hero */
+        .hero{
+            max-width:1200px; margin:28px auto; padding:28px 20px;
+            display:grid; grid-template-columns: 1.1fr .9fr; gap:26px;
+        }
+        .hero-card{
+            background:linear-gradient(135deg, #eef2ff, #ffffff);
+            border-radius:var(--radius);
+            padding:36px; display:grid; align-content:center; gap:14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+            min-height:320px;
+        }
+        .eyebrow{color:var(--primary); font-weight:700; letter-spacing:.4px; text-transform:uppercase; font-size:12px;}
+        .hero h1{margin:0; font-size:36px; line-height:1.15;}
+        .hero p{margin:0; color:var(--muted)}
+        .cta{display:flex; gap:12px; margin-top:14px;}
+        .hero-img{
+            border-radius:var(--radius); overflow:hidden; min-height:320px;
+            background: url('https://images.unsplash.com/photo-1520975922058-0f0be7a2a4e5?q=80&w=1640&auto=format&fit=crop') center/cover no-repeat;
+            box-shadow: 0 20px 40px rgba(0,0,0,.15);
+        }
+
+        /* Categories */
+        .section{max-width:1200px; margin:12px auto 28px; padding:0 20px;}
+        .section h2{margin:8px 0 16px; font-size:22px;}
+        .cats{display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;}
+        .cat{
+            background:var(--card); border-radius:14px; padding:16px;
+            display:flex; align-items:center; justify-content:space-between; gap:10px;
+            border:1px solid #eef2ff;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .cat:hover{ transform: translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.07); }
+        .chip{font-size:12px; color:#6b7280}
+        .pill{background:#eef2ff; color:#111827; font-weight:600; padding:8px 10px; border-radius:10px;}
+
+        /* Products */
+        .grid{display:grid; grid-template-columns: repeat(4, 1fr); gap:16px;}
+        .card{
+            background:var(--card); border-radius:14px; overflow:hidden; border:1px solid #eef2ff;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .card:hover{ transform: translateY(-2px); box-shadow:0 10px 22px rgba(0,0,0,.07); }
+        .card img{aspect-ratio: 4/5; object-fit: cover;}
+        .card-body{padding:12px;}
+        .price{font-weight:700;}
+        .muted{color:var(--muted); font-size:14px;}
+        .buy{margin-top:8px; width:100%;}
+
+        /* Footer */
+        .footer{margin-top:34px; padding:28px 20px; background:#fff; border-top:1px solid #e5e7eb;}
+        .footer-inner{max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; color:var(--muted);}
+
+        /* Responsive */
+        @media (max-width: 1024px){
+            .hero{grid-template-columns:1fr; }
+            .search{display:none;}
+            .grid{grid-template-columns: repeat(3, 1fr);}
+            .cats{grid-template-columns: repeat(2, 1fr);}
+        }
+        @media (max-width: 640px){
+            .nav{gap:10px}
+            .nav-links{display:none}
+            .grid{grid-template-columns: repeat(2, 1fr);}
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <base href="./">
+
+    <nav class="nav">
+        <!-- ĐÃ SỬA: Brand dẫn sang home.html -->
+        <a class="brand" href="dashboard.html">
+            <span class="logo">Q</span> QLSV Shop
+        </a>
+
+        <div class="nav-links">
+            <a href="#men" class="active">Nam</a>
+            <a href="#women">Nữ</a>
+            <a href="#kids">Trẻ em</a>
+            <a href="#sale">Sale</a>
+            <a href="#new">Hàng mới</a>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="search">
+            <span class="icon">🔎</span>
+            <input type="text" placeholder="Tìm áo thun, quần jeans, váy..."/>
+        </div>
+
+        <div class="auth">
+            <button class="btn btn-primary" onclick="goLogin()">Đăng nhập/Đăng ký</button>
+        </div>
+    </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="top">
+    <div class="hero-card">
+        <span class="eyebrow">NEW DROP • FW/25</span>
+        <h1>Bộ sưu tập Thu Đông<br/>chất liệu premium</h1>
+        <p>Form tối giản, bảng màu thanh lịch, phù hợp đi học, đi làm và dạo phố.</p>
+        <div class="cta">
+            <!-- ĐÃ SỬA: CTA vào trang Home -->
+            <a href="#sale" class="btn btn-outline">Xem ưu đãi</a>
+        </div>
+    </div>
+    <div class="hero-img" aria-label="banner thời trang"></div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+    <h2>Danh mục nổi bật</h2>
+    <div class="cats">
+        <a class="cat" href="#men"><div><div class="chip">Category</div><div>Thời trang Nam</div></div><span class="pill">Khám phá</span></a>
+        <a class="cat" href="#women"><div><div class="chip">Category</div><div>Thời trang Nữ</div></div><span class="pill">Khám phá</span></a>
+        <a class="cat" href="#kids"><div><div class="chip">Category</div><div>Trẻ em</div></div><span class="pill">Khám phá</span></a>
+        <a class="cat" href="#sale"><div><div class="chip">Category</div><div>Sale đến 50%</div></div><span class="pill">Mua nhanh</span></a>
+    </div>
+</section>
+
+<!-- Products -->
+<section class="section" id="new">
+    <h2>Hàng mới về</h2>
+    <div class="grid">
+        <!-- Card 1 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop" alt="Áo thun basic">
+            <div class="card-body">
+                <div>Áo thun basic</div>
+                <div class="muted">100% cotton compact</div>
+                <div class="price">249.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1520975594088-6a03b0de9f3c?q=80&w=1200&auto=format&fit=crop" alt="Áo khoác bomber">
+            <div class="card-body">
+                <div>Áo khoác bomber</div>
+                <div class="muted">Chống gió, nhẹ, ấm</div>
+                <div class="price">699.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1503342394123-480259ab08d6?q=80&w=1200&auto=format&fit=crop" alt="Quần jeans slim">
+            <div class="card-body">
+                <div>Quần jeans slim</div>
+                <div class="muted">Co giãn 4 chiều</div>
+                <div class="price">459.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1548883354-c0bcb4c1ddc6?q=80&w=1200&auto=format&fit=crop" alt="Váy midi">
+            <div class="card-body">
+                <div>Váy midi</div>
+                <div class="muted">Dáng A, chất mềm</div>
+                <div class="price">529.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products (Sale) -->
+<section class="section" id="sale">
+    <h2>Đang giảm giá</h2>
+    <div class="grid">
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1557303272-3e1bfa7b7431?q=80&w=1200&auto=format&fit=crop" alt="Áo sơ mi kẻ">
+            <div class="card-body">
+                <div>Áo sơ mi kẻ</div>
+                <div class="muted">Thoáng, ít nhăn</div>
+                <div class="price">-30% • 279.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1541080477400-f56d462fd26d?q=80&w=1200&auto=format&fit=crop" alt="Áo hoodie nỉ">
+            <div class="card-body">
+                <div>Áo hoodie nỉ</div>
+                <div class="muted">Mềm, ấm</div>
+                <div class="price">-20% • 399.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1200&auto=format&fit=crop" alt="Giày sneaker">
+            <div class="card-body">
+                <div>Giày sneaker</div>
+                <div class="muted">Đế êm, nhẹ</div>
+                <div class="price">-15% • 849.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop" alt="Áo len cổ lọ">
+            <div class="card-body">
+                <div>Áo len cổ lọ</div>
+                <div class="muted">Mịn, không ngứa</div>
+                <div class="price">-25% • 489.000đ</div>
+                <button class="btn btn-outline buy">Thêm vào giỏ</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div>© 2025 QLSV Shop. All rights reserved.</div>
+        <div>Chính sách đổi trả • Bảo hành • Liên hệ</div>
+    </div>
+</footer>
+
+<script>
+    const BACKEND = "http://localhost:9089"; // đổi theo backend của bạn
+
+    // Tự build URL callback tuyệt đối đúng thư mục đang chạy Live Server
+    const FRONTEND_CALLBACK =
+        `${location.origin}${location.pathname.replace(/\/[^/]*$/, '/') }auth-callback.html`;
+
+    function goLogin() {
+        // Backend nhận redirect_uri (nếu backend bạn hỗ trợ)
+        window.location.href = `${BACKEND}/api/login?redirect_uri=${encodeURIComponent(FRONTEND_CALLBACK)}`;
+    }
+
+    function goRegister() {
+        window.location.href = `${BACKEND}/api/register?redirect_uri=${encodeURIComponent(FRONTEND_CALLBACK)}`;
+    }
+</script>
+
+
+</body>
+</html>
