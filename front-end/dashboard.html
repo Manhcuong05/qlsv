@@ -20,9 +20,27 @@
             radial-gradient(900px 500px at -20% 0%,rgba(124,92,255,.20),transparent 35%),
             var(--bg);
         }
-        .appbar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:48px 1fr 48px;align-items:center;
-            padding:10px 12px;background:linear-gradient(180deg,rgba(11,18,32,.9),rgba(11,18,32,.6));backdrop-filter:blur(6px);
-            border-bottom:1px solid rgba(255,255,255,.06)}
+        .appbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 48px 1fr auto; /* <-- sửa lại chỗ này */
+    align-items: center;
+    padding: 10px 16px; /* thêm 4px padding để thoáng hơn */
+    background: linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,.6));
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.appbar .right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-right: 12px; /* <-- lùi vào bên trái một chút */
+}
+
         .appbar h1{margin:0;text-align:center;font-size:18px;font-weight:700;letter-spacing:.2px}
         .icon-btn{background:transparent;border:0;color:var(--muted);padding:8px;border-radius:12px;cursor:pointer}
         .icon-btn:hover{background:rgba(255,255,255,.06)}
@@ -57,12 +75,22 @@
 
 <body>
 <header class="appbar">
-    <div class="left"><span class="material-icons-outlined">menu</span></div>
+    <div class="left">
+        <span class="material-icons-outlined">menu</span>
+    </div>
     <h1>Trang chủ</h1>
-    <div class="right">
-        <button id="signOutBtn" class="icon-btn" title="Đăng xuất"><span class="material-icons-outlined">logout</span></button>
+
+    <!-- Gộp 2 nút vào chung 1 div.right -->
+    <div class="right" style="display:flex;align-items:center;gap:6px;">
+        <button id="openAccountBtn" class="icon-btn" title="Tài khoản Casdoor">
+            <span class="material-icons-outlined">account_circle</span>
+        </button>
+        <button id="signOutBtn" class="icon-btn" title="Đăng xuất">
+            <span class="material-icons-outlined">logout</span>
+        </button>
     </div>
 </header>
+
 
 <main class="container">
     <section class="welcome">
@@ -104,7 +132,8 @@
 
 <script>
     /** ========= Config ========= */
-    const LANDING_PAGE = 'index.html';                 // Trang landing/đăng nhập
+    const LANDING_PAGE = `${location.origin}${location.pathname.replace(/\/[^/]*$/, '/')}index.html`;
+                 // Trang landing/đăng nhập
     const BACKEND_BASE = localStorage.getItem('backendBase') || 'http://localhost:9089'; // tuỳ bạn
     const API_BASE = localStorage.getItem('apiBase') || (BACKEND_BASE.replace(/\/+$/,'') + '/api');
 
@@ -173,6 +202,7 @@
             studentCountEl.title = String(e);
         }
     }
+    
 
     /** ========= Mini Router (demo) ========= */
     document.querySelectorAll('.tile, .nav-btn').forEach(el=>{
@@ -211,6 +241,25 @@
         toast('Đã đăng xuất');
         setTimeout(()=>location.replace(LANDING_PAGE), 300);
     });
+    async function openCasdoorAccount() {
+        const CASDOOR_ENDPOINT = (localStorage.getItem('casdoorEndpoint') || 'http://localhost:8000').replace(/\/+$/, '');
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            toast('Vui lòng đăng nhập lại');
+            location.replace('index.html');
+            return;
+        }
+
+        // URL tới trang quản lý người dùng của Casdoor
+        const accountUrl = `${CASDOOR_ENDPOINT}/account?access_token=${token}`;
+        
+        // Mở trong tab mới
+        window.open(accountUrl, '_blank');
+    }
+
+    // Gắn event listener cho nút
+    document.getElementById('openAccountBtn').addEventListener('click', openCasdoorAccount);
 
     /** ========= Init ========= */
     if (TOKEN) fetchStudentCount();
